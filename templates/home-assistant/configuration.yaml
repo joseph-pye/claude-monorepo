@@ -1,0 +1,21 @@
+# Home Assistant configuration snippet
+# Drop the relevant sections into your main configuration.yaml,
+# or use !include to reference individual files from here.
+
+# Example: reference automations from this directory
+# automation: !include automations.yaml
+# script:     !include scripts.yaml
+
+# ── Helpers / input booleans ──────────────────────────────────────────────────
+# input_boolean:
+#   example_toggle:
+#     name: Example Toggle
+#     icon: mdi:toggle-switch
+
+# ── Sensors ───────────────────────────────────────────────────────────────────
+# sensor:
+#   - platform: template
+#     sensors:
+#       example_sensor:
+#         friendly_name: "Example Sensor"
+#         value_template: "{{ states('sensor.some_other_sensor') }}"

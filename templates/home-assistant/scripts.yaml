@@ -1,0 +1,11 @@
+# Scripts for <project-name>
+# Reference from configuration.yaml: script: !include scripts.yaml
+
+example_script:
+  alias: "Example Script"
+  description: "Replace this with your script description"
+  sequence:
+    - service: notify.notify
+      data:
+        message: "Example script ran!"
+  mode: single
