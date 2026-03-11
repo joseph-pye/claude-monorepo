@@ -1,0 +1,19 @@
+# Automations for <project-name>
+# Reference from configuration.yaml: automation: !include automations.yaml
+
+- id: "example_automation_001"
+  alias: "Example — trigger on state change"
+  description: "Replace this with your automation description"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.example
+      to: "on"
+  condition:
+    - condition: time
+      after: "08:00:00"
+      before: "22:00:00"
+  action:
+    - service: notify.notify
+      data:
+        message: "Example triggered!"
+  mode: single
