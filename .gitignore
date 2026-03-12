@@ -30,6 +30,7 @@ htmlcov/
 .pytype/
 
 # ── Secrets & environment ─────────────────────────────────────────────────────
+.mcp.json
 .env
 .env.local
 .env.*.local
