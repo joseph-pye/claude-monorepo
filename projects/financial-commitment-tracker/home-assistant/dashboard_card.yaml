@@ -1,0 +1,18 @@
+# Commitment Tracker — Home Assistant Dashboard Card
+#
+# Paste this into your Lovelace dashboard via the raw config editor.
+#
+# The sensor appears automatically via MQTT auto-discovery when the app starts —
+# no manual HA config needed. Just make sure MQTT is configured in .env.
+#
+# The sensor shows:
+#   Connected   — app is running and scheduler is firing normally
+#   Disconnected — last heartbeat was >2 hours ago (app likely down)
+#   Unavailable  — HA hasn't seen any message yet (app never connected)
+
+type: entities
+title: Commitment Tracker
+entities:
+  - entity: binary_sensor.commitment_tracker_bot
+    name: Telegram Bot
+    secondary_info: last-changed

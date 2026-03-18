@@ -17,12 +17,14 @@ load_dotenv()
 from database import engine, Base
 from routes import router
 from scheduler import start_scheduler, shutdown_scheduler
+from mqtt_publisher import publish_discovery
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     os.makedirs("data", exist_ok=True)
+    publish_discovery()
     start_scheduler()
     yield
     shutdown_scheduler()

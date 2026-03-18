@@ -7,6 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from database import SessionLocal, Commitment
 from telegram_bot import send_telegram_message
+from mqtt_publisher import publish_status
 
 scheduler = BackgroundScheduler()
 
@@ -62,6 +63,8 @@ def check_reminders():
         db.commit()
     finally:
         db.close()
+
+    publish_status()
 
 
 def send_weekly_summary():
