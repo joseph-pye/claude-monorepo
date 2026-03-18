@@ -1,0 +1,320 @@
+/* ── Reset & Base ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f1117;
+  --bg-card: #1a1d27;
+  --bg-hover: #222633;
+  --border: #2a2e3d;
+  --text: #b4b8c8;
+  --text-h: #e4e6ef;
+  --accent: #6c8cff;
+  --accent-hover: #8ba3ff;
+  --ok: #4ade80;
+  --upcoming: #60a5fa;
+  --soon: #fbbf24;
+  --urgent: #f87171;
+  --expired: #9ca3af;
+  --danger: #ef4444;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ── Header ── */
+.app-header {
+  text-align: center;
+  padding: 32px 0 24px;
+}
+
+.app-header h1 {
+  color: var(--text-h);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: var(--text);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* ── Dashboard Cards ── */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.dashboard-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.card-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.card-ok .card-value { color: var(--ok); }
+.card-upcoming .card-value { color: var(--upcoming); }
+.card-soon .card-value { color: var(--soon); }
+.card-urgent .card-value { color: var(--urgent); }
+.card-expired .card-value { color: var(--expired); }
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.toggle input {
+  accent-color: var(--accent);
+}
+
+/* ── Buttons ── */
+.btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-h);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s;
+}
+
+.btn:hover { background: var(--bg-hover); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-small { padding: 4px 10px; font-size: 12px; }
+
+.btn-danger { color: var(--danger); border-color: var(--danger); }
+.btn-danger:hover { background: rgba(239, 68, 68, 0.15); }
+
+.btn-renew { color: var(--ok); border-color: var(--ok); }
+.btn-renew:hover { background: rgba(74, 222, 128, 0.15); }
+
+.btn-archive { color: var(--expired); border-color: var(--expired); }
+.btn-archive:hover { background: rgba(156, 163, 175, 0.15); }
+
+/* ── Commitment Cards ── */
+.commitment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.commitment-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  border-left: 4px solid var(--border);
+}
+
+.commitment-card.status-ok { border-left-color: var(--ok); }
+.commitment-card.status-upcoming { border-left-color: var(--upcoming); }
+.commitment-card.status-soon { border-left-color: var(--soon); }
+.commitment-card.status-urgent { border-left-color: var(--urgent); }
+.commitment-card.status-expired { border-left-color: var(--expired); }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.card-header h3 {
+  color: var(--text-h);
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.category-badge {
+  display: inline-block;
+  background: rgba(108, 140, 255, 0.15);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.card-details {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.card-details p { margin-bottom: 4px; }
+
+.days-display {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.notes {
+  color: var(--text);
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Renew Panel ── */
+.renew-panel {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.renew-panel p { font-size: 13px; }
+
+.renew-panel input[type="date"] {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 13px;
+}
+
+/* ── Modal / Form ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.commitment-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.commitment-form h2 {
+  color: var(--text-h);
+  margin-bottom: 20px;
+}
+
+.commitment-form label {
+  display: block;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+.commitment-form input,
+.commitment-form select,
+.commitment-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.commitment-form input:focus,
+.commitment-form select:focus,
+.commitment-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* ── Empty / Loading ── */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text);
+}
+
+.loading {
+  text-align: center;
+  padding: 32px;
+  color: var(--text);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .dashboard { grid-template-columns: repeat(3, 1fr); }
+  .toolbar { flex-direction: column; gap: 12px; align-items: stretch; }
+  .card-header { flex-direction: column; gap: 8px; }
+}
