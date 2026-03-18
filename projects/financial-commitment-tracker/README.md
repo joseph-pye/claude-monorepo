@@ -59,6 +59,59 @@ cd frontend && npm run dev
 - **Weekly summary** — every Monday at 9am, a full rundown of what's coming up and reassurance when nothing needs attention
 - **Categories** — mortgage, insurance, subscription, loan, warranty, contract, membership
 
+## Deploying to Proxmox LXC
+
+The `deploy/` directory contains everything needed to run this on a Proxmox LXC container (Debian 12).
+
+### Quick start (from the Proxmox host)
+
+```bash
+# Clone the repo on the Proxmox host (or scp the deploy/ folder)
+cd projects/financial-commitment-tracker/deploy
+
+# Create LXC container 200 on local-lvm, install everything automatically
+bash create-lxc.sh 200 local-lvm
+```
+
+This will:
+- Download the Debian 12 template (if needed)
+- Create a lightweight LXC (512 MB RAM, 1 core, 4 GB disk)
+- Install Python, Node, nginx inside the container
+- Clone the repo, build the frontend, set up a venv
+- Create a `fin-tracker` systemd service (auto-starts on boot)
+- Proxy port 80 (nginx) → port 8000 (uvicorn)
+
+### After creation
+
+```bash
+# Set your Telegram credentials
+pct exec 200 -- nano /opt/fin-tracker/.env
+
+# Restart to pick up the new config
+pct exec 200 -- systemctl restart fin-tracker
+
+# Check the IP
+pct exec 200 -- hostname -I
+```
+
+Then open `http://<container-ip>` in your browser.
+
+### Manual install (any Debian/Ubuntu box)
+
+```bash
+# Copy install.sh to the target machine and run it
+bash install.sh
+```
+
+### Updating
+
+```bash
+# Inside the LXC
+bash /opt/fin-tracker/deploy/update.sh
+```
+
+This pulls the latest code, rebuilds the frontend, updates Python deps, and restarts the service. Your `.env` and database are preserved.
+
 ## API Endpoints
 
 | Method | Path | Description |
