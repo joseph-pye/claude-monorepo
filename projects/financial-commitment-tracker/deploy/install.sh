@@ -14,10 +14,11 @@ BRANCH="main"
 
 echo "==> Installing system dependencies..."
 apt-get update -qq
-apt-get install -y -qq \
-    python3 python3-venv python3-pip \
-    nodejs npm \
-    nginx git curl > /dev/null
+apt-get install -y -qq curl git nginx python3 python3-venv python3-pip > /dev/null
+
+echo "==> Installing Node.js 20..."
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash - > /dev/null
+apt-get install -y -qq nodejs > /dev/null
 
 echo "==> Creating app user..."
 id "$APP_USER" &>/dev/null || useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin "$APP_USER"
