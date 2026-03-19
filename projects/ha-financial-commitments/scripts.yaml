@@ -1,0 +1,57 @@
+# Scripts for ha-financial-commitments
+# Reference from configuration.yaml: script: !include scripts.yaml
+
+# ── Send summary on demand ────────────────────────────────────────────────────
+# Call from Developer Tools or a button card to get an instant summary.
+fin_commitment_send_summary:
+  alias: "Financial Commitments — Send Summary Now"
+  description: "Manually trigger the weekly summary via Telegram"
+  sequence:
+    - service: notify.telegram
+      data:
+        title: "Financial Commitments Summary"
+        message: >
+          {% set sensors = [
+            'sensor.mortgage_days_remaining',
+            'sensor.car_insurance_days_remaining',
+            'sensor.home_insurance_days_remaining',
+            'sensor.broadband_days_remaining',
+            'sensor.energy_days_remaining',
+            'sensor.phone_contract_days_remaining'
+          ] %}
+          {% set ns = namespace(lines=[], urgent=0) %}
+          {% for s in sensors %}
+            {% set d = states(s) %}
+            {% set archived = state_attr(s, 'archived') %}
+            {% if archived != 'on' and d not in ['unknown', 'unavailable'] %}
+              {% set days = d | int %}
+              {% set name = state_attr(s, 'commitment') %}
+              {% set provider = state_attr(s, 'provider') %}
+              {% set amount = state_attr(s, 'amount') %}
+              {% if days < 0 %}
+                {% set ns.lines = ns.lines + ['EXPIRED *' ~ name ~ '* — ' ~ (days | abs) ~ ' days ago — ' ~ provider ~ ' ' ~ amount] %}
+                {% set ns.urgent = ns.urgent + 1 %}
+              {% elif days <= 7 %}
+                {% set ns.lines = ns.lines + ['URGENT *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+                {% set ns.urgent = ns.urgent + 1 %}
+              {% elif days <= 30 %}
+                {% set ns.lines = ns.lines + ['SOON *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+              {% elif days <= 90 %}
+                {% set ns.lines = ns.lines + ['UPCOMING *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+              {% else %}
+                {% set ns.lines = ns.lines + ['OK *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if ns.lines | length == 0 %}
+          No active commitments tracked.
+          {% else %}
+          {{ ns.lines | join('\n') }}
+
+          {% if ns.urgent == 0 %}
+          All clear — nothing needs immediate attention.
+          {% else %}
+          {{ ns.urgent }} commitment(s) need attention!
+          {% endif %}
+          {% endif %}
+  mode: single

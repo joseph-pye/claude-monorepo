@@ -1,0 +1,327 @@
+# Automations for ha-financial-commitments
+# Reference from configuration.yaml: automation: !include automations.yaml
+#
+# Prerequisites:
+#   - Telegram Bot integration configured in HA
+#   - A notify service named "telegram" (or update the service calls below)
+
+# ── Daily reminder check ─────────────────────────────────────────────────────
+# Runs once a day at 9am. For each active commitment, sends a Telegram message
+# if it's at exactly 90, 30, or 7 days out — or if it's expired.
+
+- id: "fin_commitment_daily_check"
+  alias: "Financial Commitments — Daily Reminder Check"
+  description: "Check all commitments and send Telegram alerts at 90/30/7 day thresholds"
+  trigger:
+    - platform: time
+      at: "09:00:00"
+  action:
+    # ── Mortgage ──
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_mortgage_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.mortgage_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int in [90, 30, 7] }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Mortgage — {{ states('sensor.mortgage_days_remaining') }} days"
+                message: >
+                  *Mortgage* renewal in *{{ states('sensor.mortgage_days_remaining') }} days*
+                  Provider: {{ state_attr('sensor.mortgage_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.mortgage_days_remaining', 'amount') }}
+                  Expiry: {{ state_attr('sensor.mortgage_days_remaining', 'expiry') }}
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_mortgage_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.mortgage_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int < 0 }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Mortgage — EXPIRED"
+                message: >
+                  *Mortgage* has *EXPIRED* ({{ states('sensor.mortgage_days_remaining') | int | abs }} days ago)
+                  Provider: {{ state_attr('sensor.mortgage_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.mortgage_days_remaining', 'amount') }}
+
+    # ── Car Insurance ──
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_car_insurance_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.car_insurance_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int in [90, 30, 7] }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Car Insurance — {{ states('sensor.car_insurance_days_remaining') }} days"
+                message: >
+                  *Car Insurance* renewal in *{{ states('sensor.car_insurance_days_remaining') }} days*
+                  Provider: {{ state_attr('sensor.car_insurance_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.car_insurance_days_remaining', 'amount') }}
+                  Expiry: {{ state_attr('sensor.car_insurance_days_remaining', 'expiry') }}
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_car_insurance_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.car_insurance_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int < 0 }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Car Insurance — EXPIRED"
+                message: >
+                  *Car Insurance* has *EXPIRED* ({{ states('sensor.car_insurance_days_remaining') | int | abs }} days ago)
+                  Provider: {{ state_attr('sensor.car_insurance_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.car_insurance_days_remaining', 'amount') }}
+
+    # ── Home Insurance ──
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_home_insurance_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.home_insurance_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int in [90, 30, 7] }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Home Insurance — {{ states('sensor.home_insurance_days_remaining') }} days"
+                message: >
+                  *Home Insurance* renewal in *{{ states('sensor.home_insurance_days_remaining') }} days*
+                  Provider: {{ state_attr('sensor.home_insurance_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.home_insurance_days_remaining', 'amount') }}
+                  Expiry: {{ state_attr('sensor.home_insurance_days_remaining', 'expiry') }}
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_home_insurance_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.home_insurance_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int < 0 }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Home Insurance — EXPIRED"
+                message: >
+                  *Home Insurance* has *EXPIRED* ({{ states('sensor.home_insurance_days_remaining') | int | abs }} days ago)
+                  Provider: {{ state_attr('sensor.home_insurance_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.home_insurance_days_remaining', 'amount') }}
+
+    # ── Broadband ──
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_broadband_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.broadband_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int in [90, 30, 7] }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Broadband — {{ states('sensor.broadband_days_remaining') }} days"
+                message: >
+                  *Broadband* renewal in *{{ states('sensor.broadband_days_remaining') }} days*
+                  Provider: {{ state_attr('sensor.broadband_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.broadband_days_remaining', 'amount') }}
+                  Expiry: {{ state_attr('sensor.broadband_days_remaining', 'expiry') }}
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_broadband_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.broadband_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int < 0 }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Broadband — EXPIRED"
+                message: >
+                  *Broadband* has *EXPIRED* ({{ states('sensor.broadband_days_remaining') | int | abs }} days ago)
+                  Provider: {{ state_attr('sensor.broadband_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.broadband_days_remaining', 'amount') }}
+
+    # ── Energy ──
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_energy_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.energy_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int in [90, 30, 7] }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Energy — {{ states('sensor.energy_days_remaining') }} days"
+                message: >
+                  *Energy* renewal in *{{ states('sensor.energy_days_remaining') }} days*
+                  Provider: {{ state_attr('sensor.energy_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.energy_days_remaining', 'amount') }}
+                  Expiry: {{ state_attr('sensor.energy_days_remaining', 'expiry') }}
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_energy_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.energy_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int < 0 }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Energy — EXPIRED"
+                message: >
+                  *Energy* has *EXPIRED* ({{ states('sensor.energy_days_remaining') | int | abs }} days ago)
+                  Provider: {{ state_attr('sensor.energy_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.energy_days_remaining', 'amount') }}
+
+    # ── Phone Contract ──
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_phone_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.phone_contract_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int in [90, 30, 7] }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Phone Contract — {{ states('sensor.phone_contract_days_remaining') }} days"
+                message: >
+                  *Phone Contract* renewal in *{{ states('sensor.phone_contract_days_remaining') }} days*
+                  Provider: {{ state_attr('sensor.phone_contract_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.phone_contract_days_remaining', 'amount') }}
+                  Expiry: {{ state_attr('sensor.phone_contract_days_remaining', 'expiry') }}
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.commitment_phone_archived
+              state: "off"
+            - condition: template
+              value_template: >
+                {% set d = states('sensor.phone_contract_days_remaining') %}
+                {{ d not in ['unknown', 'unavailable'] and d | int < 0 }}
+          sequence:
+            - service: notify.telegram
+              data:
+                title: "Phone Contract — EXPIRED"
+                message: >
+                  *Phone Contract* has *EXPIRED* ({{ states('sensor.phone_contract_days_remaining') | int | abs }} days ago)
+                  Provider: {{ state_attr('sensor.phone_contract_days_remaining', 'provider') }}
+                  Amount: {{ state_attr('sensor.phone_contract_days_remaining', 'amount') }}
+  mode: single
+
+# ── Weekly summary (Monday 9:05am) ───────────────────────────────────────────
+- id: "fin_commitment_weekly_summary"
+  alias: "Financial Commitments — Weekly Summary"
+  description: "Every Monday at 9:05am, send a full summary of all active commitments"
+  trigger:
+    - platform: time
+      at: "09:05:00"
+  condition:
+    - condition: time
+      weekday:
+        - mon
+  action:
+    - service: notify.telegram
+      data:
+        title: "Weekly Financial Commitments Summary"
+        message: >
+          {% set sensors = [
+            'sensor.mortgage_days_remaining',
+            'sensor.car_insurance_days_remaining',
+            'sensor.home_insurance_days_remaining',
+            'sensor.broadband_days_remaining',
+            'sensor.energy_days_remaining',
+            'sensor.phone_contract_days_remaining'
+          ] %}
+          {% set ns = namespace(lines=[], urgent=0) %}
+          {% for s in sensors %}
+            {% set d = states(s) %}
+            {% set archived = state_attr(s, 'archived') %}
+            {% if archived != 'on' and d not in ['unknown', 'unavailable'] %}
+              {% set days = d | int %}
+              {% set name = state_attr(s, 'commitment') %}
+              {% set provider = state_attr(s, 'provider') %}
+              {% set amount = state_attr(s, 'amount') %}
+              {% if days < 0 %}
+                {% set ns.lines = ns.lines + ['EXPIRED *' ~ name ~ '* — ' ~ (days | abs) ~ ' days ago — ' ~ provider ~ ' ' ~ amount] %}
+                {% set ns.urgent = ns.urgent + 1 %}
+              {% elif days <= 7 %}
+                {% set ns.lines = ns.lines + ['URGENT *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+                {% set ns.urgent = ns.urgent + 1 %}
+              {% elif days <= 30 %}
+                {% set ns.lines = ns.lines + ['SOON *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+              {% elif days <= 90 %}
+                {% set ns.lines = ns.lines + ['UPCOMING *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+              {% else %}
+                {% set ns.lines = ns.lines + ['OK *' ~ name ~ '* — ' ~ days ~ ' days — ' ~ provider ~ ' ' ~ amount] %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          {% if ns.lines | length == 0 %}
+          No active commitments tracked.
+          {% else %}
+          {{ ns.lines | join('\n') }}
+
+          {% if ns.urgent == 0 %}
+          All clear — nothing needs immediate attention.
+          {% else %}
+          {{ ns.urgent }} commitment(s) need attention!
+          {% endif %}
+          {% endif %}
+  mode: single
+
+# ── Urgent alert (real-time, when any commitment drops to ≤7 days) ───────────
+- id: "fin_commitment_urgent_alert"
+  alias: "Financial Commitments — Urgent Alert"
+  description: "Immediate alert when a commitment drops to 7 days or fewer"
+  trigger:
+    - platform: numeric_state
+      entity_id:
+        - sensor.mortgage_days_remaining
+        - sensor.car_insurance_days_remaining
+        - sensor.home_insurance_days_remaining
+        - sensor.broadband_days_remaining
+        - sensor.energy_days_remaining
+        - sensor.phone_contract_days_remaining
+      below: 8
+  condition:
+    - condition: template
+      value_template: >
+        {{ state_attr(trigger.entity_id, 'archived') != 'on' }}
+  action:
+    - service: notify.telegram
+      data:
+        title: "Urgent: {{ state_attr(trigger.entity_id, 'commitment') }}"
+        message: >
+          *{{ state_attr(trigger.entity_id, 'commitment') }}* expires in *{{ states(trigger.entity_id) }} days*!
+          Provider: {{ state_attr(trigger.entity_id, 'provider') }}
+          Amount: {{ state_attr(trigger.entity_id, 'amount') }}
+          Expiry: {{ state_attr(trigger.entity_id, 'expiry') }}
+
+          Action needed — renew or update the expiry date in HA.
+  mode: queued
+  max: 10

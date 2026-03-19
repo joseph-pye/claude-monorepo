@@ -1,0 +1,462 @@
+# Home Assistant — Financial Commitment Tracker
+#
+# Drop-in configuration for tracking financial commitments and
+# getting Telegram reminders before they expire.
+#
+# Usage:
+#   1. Copy the files into your HA config directory
+#   2. Add the following to your main configuration.yaml:
+#
+#        homeassistant:
+#          packages:
+#            financial_commitments: !include financial_commitments.yaml
+#
+#        automation: !include automations.yaml
+#
+#   3. Configure the Telegram bot integration in HA first:
+#        https://www.home-assistant.io/integrations/telegram_bot/
+#
+#   4. Restart Home Assistant, then go to Settings → Devices & Services
+#      → Helpers to see/edit the commitment helpers.
+
+# ── Input helpers ─────────────────────────────────────────────────────────────
+# Each commitment needs: name (implicit in entity_id), expiry date, provider,
+# amount, category, and an archive toggle.
+#
+# To add a new commitment, copy one of the blocks below and change the prefix.
+# Naming convention: commitment_<slug>_<field>
+
+input_datetime:
+  # ── Mortgage ──
+  commitment_mortgage_expiry:
+    name: "Mortgage — Expiry Date"
+    has_date: true
+    has_time: false
+    icon: mdi:home-city
+
+  # ── Car Insurance ──
+  commitment_car_insurance_expiry:
+    name: "Car Insurance — Expiry Date"
+    has_date: true
+    has_time: false
+    icon: mdi:car
+
+  # ── Home Insurance ──
+  commitment_home_insurance_expiry:
+    name: "Home Insurance — Expiry Date"
+    has_date: true
+    has_time: false
+    icon: mdi:shield-home
+
+  # ── Broadband ──
+  commitment_broadband_expiry:
+    name: "Broadband — Expiry Date"
+    has_date: true
+    has_time: false
+    icon: mdi:wifi
+
+  # ── Energy ──
+  commitment_energy_expiry:
+    name: "Energy — Expiry Date"
+    has_date: true
+    has_time: false
+    icon: mdi:lightning-bolt
+
+  # ── Phone Contract ──
+  commitment_phone_expiry:
+    name: "Phone Contract — Expiry Date"
+    has_date: true
+    has_time: false
+    icon: mdi:cellphone
+
+input_text:
+  # ── Mortgage ──
+  commitment_mortgage_provider:
+    name: "Mortgage — Provider"
+    icon: mdi:domain
+    initial: ""
+    max: 100
+  commitment_mortgage_amount:
+    name: "Mortgage — Amount"
+    icon: mdi:currency-gbp
+    initial: ""
+    max: 50
+
+  # ── Car Insurance ──
+  commitment_car_insurance_provider:
+    name: "Car Insurance — Provider"
+    icon: mdi:domain
+    initial: ""
+    max: 100
+  commitment_car_insurance_amount:
+    name: "Car Insurance — Amount"
+    icon: mdi:currency-gbp
+    initial: ""
+    max: 50
+
+  # ── Home Insurance ──
+  commitment_home_insurance_provider:
+    name: "Home Insurance — Provider"
+    icon: mdi:domain
+    initial: ""
+    max: 100
+  commitment_home_insurance_amount:
+    name: "Home Insurance — Amount"
+    icon: mdi:currency-gbp
+    initial: ""
+    max: 50
+
+  # ── Broadband ──
+  commitment_broadband_provider:
+    name: "Broadband — Provider"
+    icon: mdi:domain
+    initial: ""
+    max: 100
+  commitment_broadband_amount:
+    name: "Broadband — Amount"
+    icon: mdi:currency-gbp
+    initial: ""
+    max: 50
+
+  # ── Energy ──
+  commitment_energy_provider:
+    name: "Energy — Provider"
+    icon: mdi:domain
+    initial: ""
+    max: 100
+  commitment_energy_amount:
+    name: "Energy — Amount"
+    icon: mdi:currency-gbp
+    initial: ""
+    max: 50
+
+  # ── Phone Contract ──
+  commitment_phone_provider:
+    name: "Phone Contract — Provider"
+    icon: mdi:domain
+    initial: ""
+    max: 100
+  commitment_phone_amount:
+    name: "Phone Contract — Amount"
+    icon: mdi:currency-gbp
+    initial: ""
+    max: 50
+
+  # ── Notes (shared field for any ad-hoc notes) ──
+  commitment_mortgage_notes:
+    name: "Mortgage — Notes"
+    icon: mdi:note-text
+    initial: ""
+    max: 255
+  commitment_car_insurance_notes:
+    name: "Car Insurance — Notes"
+    icon: mdi:note-text
+    initial: ""
+    max: 255
+  commitment_home_insurance_notes:
+    name: "Home Insurance — Notes"
+    icon: mdi:note-text
+    initial: ""
+    max: 255
+  commitment_broadband_notes:
+    name: "Broadband — Notes"
+    icon: mdi:note-text
+    initial: ""
+    max: 255
+  commitment_energy_notes:
+    name: "Energy — Notes"
+    icon: mdi:note-text
+    initial: ""
+    max: 255
+  commitment_phone_notes:
+    name: "Phone Contract — Notes"
+    icon: mdi:note-text
+    initial: ""
+    max: 255
+
+input_select:
+  commitment_mortgage_category:
+    name: "Mortgage — Category"
+    icon: mdi:tag
+    options:
+      - mortgage
+      - insurance
+      - subscription
+      - loan
+      - warranty
+      - contract
+      - membership
+    initial: mortgage
+  commitment_car_insurance_category:
+    name: "Car Insurance — Category"
+    icon: mdi:tag
+    options:
+      - mortgage
+      - insurance
+      - subscription
+      - loan
+      - warranty
+      - contract
+      - membership
+    initial: insurance
+  commitment_home_insurance_category:
+    name: "Home Insurance — Category"
+    icon: mdi:tag
+    options:
+      - mortgage
+      - insurance
+      - subscription
+      - loan
+      - warranty
+      - contract
+      - membership
+    initial: insurance
+  commitment_broadband_category:
+    name: "Broadband — Category"
+    icon: mdi:tag
+    options:
+      - mortgage
+      - insurance
+      - subscription
+      - loan
+      - warranty
+      - contract
+      - membership
+    initial: subscription
+  commitment_energy_category:
+    name: "Energy — Category"
+    icon: mdi:tag
+    options:
+      - mortgage
+      - insurance
+      - subscription
+      - loan
+      - warranty
+      - contract
+      - membership
+    initial: contract
+  commitment_phone_category:
+    name: "Phone Contract — Category"
+    icon: mdi:tag
+    options:
+      - mortgage
+      - insurance
+      - subscription
+      - loan
+      - warranty
+      - contract
+      - membership
+    initial: contract
+
+input_boolean:
+  commitment_mortgage_archived:
+    name: "Mortgage — Archived"
+    icon: mdi:archive
+  commitment_car_insurance_archived:
+    name: "Car Insurance — Archived"
+    icon: mdi:archive
+  commitment_home_insurance_archived:
+    name: "Home Insurance — Archived"
+    icon: mdi:archive
+  commitment_broadband_archived:
+    name: "Broadband — Archived"
+    icon: mdi:archive
+  commitment_energy_archived:
+    name: "Energy — Archived"
+    icon: mdi:archive
+  commitment_phone_archived:
+    name: "Phone Contract — Archived"
+    icon: mdi:archive
+
+# ── Template sensors ──────────────────────────────────────────────────────────
+# One sensor per commitment that computes days remaining and a status attribute.
+# Only active (non-archived) commitments with a set date produce useful values.
+
+template:
+  - sensor:
+      - name: "Mortgage — Days Remaining"
+        unique_id: commitment_mortgage_days
+        icon: mdi:home-city
+        unit_of_measurement: "days"
+        state: >
+          {% set expiry = states('input_datetime.commitment_mortgage_expiry') %}
+          {% if expiry in ['unknown', 'unavailable', ''] %}
+            unknown
+          {% else %}
+            {{ (strptime(expiry, '%Y-%m-%d').date() - now().date()).days }}
+          {% endif %}
+        attributes:
+          status: &status_template >
+            {% set d = states(this.entity_id) %}
+            {% if d in ['unknown', 'unavailable'] %}unknown
+            {% elif d | int < 0 %}expired
+            {% elif d | int <= 7 %}urgent
+            {% elif d | int <= 30 %}soon
+            {% elif d | int <= 90 %}upcoming
+            {% else %}ok{% endif %}
+          commitment: "Mortgage"
+          provider: "{{ states('input_text.commitment_mortgage_provider') }}"
+          amount: "{{ states('input_text.commitment_mortgage_amount') }}"
+          expiry: "{{ states('input_datetime.commitment_mortgage_expiry') }}"
+          archived: "{{ states('input_boolean.commitment_mortgage_archived') }}"
+
+      - name: "Car Insurance — Days Remaining"
+        unique_id: commitment_car_insurance_days
+        icon: mdi:car
+        unit_of_measurement: "days"
+        state: >
+          {% set expiry = states('input_datetime.commitment_car_insurance_expiry') %}
+          {% if expiry in ['unknown', 'unavailable', ''] %}
+            unknown
+          {% else %}
+            {{ (strptime(expiry, '%Y-%m-%d').date() - now().date()).days }}
+          {% endif %}
+        attributes:
+          status: *status_template
+          commitment: "Car Insurance"
+          provider: "{{ states('input_text.commitment_car_insurance_provider') }}"
+          amount: "{{ states('input_text.commitment_car_insurance_amount') }}"
+          expiry: "{{ states('input_datetime.commitment_car_insurance_expiry') }}"
+          archived: "{{ states('input_boolean.commitment_car_insurance_archived') }}"
+
+      - name: "Home Insurance — Days Remaining"
+        unique_id: commitment_home_insurance_days
+        icon: mdi:shield-home
+        unit_of_measurement: "days"
+        state: >
+          {% set expiry = states('input_datetime.commitment_home_insurance_expiry') %}
+          {% if expiry in ['unknown', 'unavailable', ''] %}
+            unknown
+          {% else %}
+            {{ (strptime(expiry, '%Y-%m-%d').date() - now().date()).days }}
+          {% endif %}
+        attributes:
+          status: *status_template
+          commitment: "Home Insurance"
+          provider: "{{ states('input_text.commitment_home_insurance_provider') }}"
+          amount: "{{ states('input_text.commitment_home_insurance_amount') }}"
+          expiry: "{{ states('input_datetime.commitment_home_insurance_expiry') }}"
+          archived: "{{ states('input_boolean.commitment_home_insurance_archived') }}"
+
+      - name: "Broadband — Days Remaining"
+        unique_id: commitment_broadband_days
+        icon: mdi:wifi
+        unit_of_measurement: "days"
+        state: >
+          {% set expiry = states('input_datetime.commitment_broadband_expiry') %}
+          {% if expiry in ['unknown', 'unavailable', ''] %}
+            unknown
+          {% else %}
+            {{ (strptime(expiry, '%Y-%m-%d').date() - now().date()).days }}
+          {% endif %}
+        attributes:
+          status: *status_template
+          commitment: "Broadband"
+          provider: "{{ states('input_text.commitment_broadband_provider') }}"
+          amount: "{{ states('input_text.commitment_broadband_amount') }}"
+          expiry: "{{ states('input_datetime.commitment_broadband_expiry') }}"
+          archived: "{{ states('input_boolean.commitment_broadband_archived') }}"
+
+      - name: "Energy — Days Remaining"
+        unique_id: commitment_energy_days
+        icon: mdi:lightning-bolt
+        unit_of_measurement: "days"
+        state: >
+          {% set expiry = states('input_datetime.commitment_energy_expiry') %}
+          {% if expiry in ['unknown', 'unavailable', ''] %}
+            unknown
+          {% else %}
+            {{ (strptime(expiry, '%Y-%m-%d').date() - now().date()).days }}
+          {% endif %}
+        attributes:
+          status: *status_template
+          commitment: "Energy"
+          provider: "{{ states('input_text.commitment_energy_provider') }}"
+          amount: "{{ states('input_text.commitment_energy_amount') }}"
+          expiry: "{{ states('input_datetime.commitment_energy_expiry') }}"
+          archived: "{{ states('input_boolean.commitment_energy_archived') }}"
+
+      - name: "Phone Contract — Days Remaining"
+        unique_id: commitment_phone_days
+        icon: mdi:cellphone
+        unit_of_measurement: "days"
+        state: >
+          {% set expiry = states('input_datetime.commitment_phone_expiry') %}
+          {% if expiry in ['unknown', 'unavailable', ''] %}
+            unknown
+          {% else %}
+            {{ (strptime(expiry, '%Y-%m-%d').date() - now().date()).days }}
+          {% endif %}
+        attributes:
+          status: *status_template
+          commitment: "Phone Contract"
+          provider: "{{ states('input_text.commitment_phone_provider') }}"
+          amount: "{{ states('input_text.commitment_phone_amount') }}"
+          expiry: "{{ states('input_datetime.commitment_phone_expiry') }}"
+          archived: "{{ states('input_boolean.commitment_phone_archived') }}"
+
+  # ── Summary sensors ──
+  - sensor:
+      - name: "Financial Commitments — Total Active"
+        unique_id: commitments_total_active
+        icon: mdi:counter
+        state: >
+          {% set sensors = [
+            'sensor.mortgage_days_remaining',
+            'sensor.car_insurance_days_remaining',
+            'sensor.home_insurance_days_remaining',
+            'sensor.broadband_days_remaining',
+            'sensor.energy_days_remaining',
+            'sensor.phone_contract_days_remaining'
+          ] %}
+          {% set ns = namespace(count=0) %}
+          {% for s in sensors %}
+            {% if state_attr(s, 'archived') != 'on' and states(s) not in ['unknown', 'unavailable'] %}
+              {% set ns.count = ns.count + 1 %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.count }}
+
+      - name: "Financial Commitments — Urgent Count"
+        unique_id: commitments_urgent_count
+        icon: mdi:alert-circle
+        state: >
+          {% set sensors = [
+            'sensor.mortgage_days_remaining',
+            'sensor.car_insurance_days_remaining',
+            'sensor.home_insurance_days_remaining',
+            'sensor.broadband_days_remaining',
+            'sensor.energy_days_remaining',
+            'sensor.phone_contract_days_remaining'
+          ] %}
+          {% set ns = namespace(count=0) %}
+          {% for s in sensors %}
+            {% if state_attr(s, 'archived') != 'on'
+               and states(s) not in ['unknown', 'unavailable']
+               and states(s) | int <= 7 %}
+              {% set ns.count = ns.count + 1 %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.count }}
+
+      - name: "Financial Commitments — Expired Count"
+        unique_id: commitments_expired_count
+        icon: mdi:alert-octagon
+        state: >
+          {% set sensors = [
+            'sensor.mortgage_days_remaining',
+            'sensor.car_insurance_days_remaining',
+            'sensor.home_insurance_days_remaining',
+            'sensor.broadband_days_remaining',
+            'sensor.energy_days_remaining',
+            'sensor.phone_contract_days_remaining'
+          ] %}
+          {% set ns = namespace(count=0) %}
+          {% for s in sensors %}
+            {% if state_attr(s, 'archived') != 'on'
+               and states(s) not in ['unknown', 'unavailable']
+               and states(s) | int < 0 %}
+              {% set ns.count = ns.count + 1 %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.count }}

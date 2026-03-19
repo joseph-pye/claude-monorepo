@@ -1,0 +1,187 @@
+# Lovelace dashboard for Financial Commitments
+#
+# To use: go to HA → Settings → Dashboards → Add Dashboard → choose "YAML"
+# Then paste this into the dashboard's raw config editor.
+# Or add it as a view to your existing dashboard.
+
+title: Financial Commitments
+views:
+  - title: Commitments
+    path: commitments
+    icon: mdi:currency-gbp
+    cards:
+      # ── Summary row ──
+      - type: horizontal-stack
+        cards:
+          - type: entity
+            entity: sensor.financial_commitments_total_active
+            name: Active
+            icon: mdi:counter
+
+          - type: entity
+            entity: sensor.financial_commitments_urgent_count
+            name: Urgent
+            icon: mdi:alert-circle
+
+          - type: entity
+            entity: sensor.financial_commitments_expired_count
+            name: Expired
+            icon: mdi:alert-octagon
+
+      # ── Commitment cards ──
+      - type: conditional
+        conditions:
+          - entity: input_boolean.commitment_mortgage_archived
+            state: "off"
+        card:
+          type: entities
+          title: Mortgage
+          icon: mdi:home-city
+          show_header_toggle: false
+          entities:
+            - entity: sensor.mortgage_days_remaining
+              name: Days Remaining
+            - entity: input_datetime.commitment_mortgage_expiry
+              name: Expiry Date
+            - entity: input_text.commitment_mortgage_provider
+              name: Provider
+            - entity: input_text.commitment_mortgage_amount
+              name: Amount
+            - entity: input_text.commitment_mortgage_notes
+              name: Notes
+            - entity: input_select.commitment_mortgage_category
+              name: Category
+            - entity: input_boolean.commitment_mortgage_archived
+              name: Archived
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.commitment_car_insurance_archived
+            state: "off"
+        card:
+          type: entities
+          title: Car Insurance
+          icon: mdi:car
+          show_header_toggle: false
+          entities:
+            - entity: sensor.car_insurance_days_remaining
+              name: Days Remaining
+            - entity: input_datetime.commitment_car_insurance_expiry
+              name: Expiry Date
+            - entity: input_text.commitment_car_insurance_provider
+              name: Provider
+            - entity: input_text.commitment_car_insurance_amount
+              name: Amount
+            - entity: input_text.commitment_car_insurance_notes
+              name: Notes
+            - entity: input_select.commitment_car_insurance_category
+              name: Category
+            - entity: input_boolean.commitment_car_insurance_archived
+              name: Archived
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.commitment_home_insurance_archived
+            state: "off"
+        card:
+          type: entities
+          title: Home Insurance
+          icon: mdi:shield-home
+          show_header_toggle: false
+          entities:
+            - entity: sensor.home_insurance_days_remaining
+              name: Days Remaining
+            - entity: input_datetime.commitment_home_insurance_expiry
+              name: Expiry Date
+            - entity: input_text.commitment_home_insurance_provider
+              name: Provider
+            - entity: input_text.commitment_home_insurance_amount
+              name: Amount
+            - entity: input_text.commitment_home_insurance_notes
+              name: Notes
+            - entity: input_select.commitment_home_insurance_category
+              name: Category
+            - entity: input_boolean.commitment_home_insurance_archived
+              name: Archived
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.commitment_broadband_archived
+            state: "off"
+        card:
+          type: entities
+          title: Broadband
+          icon: mdi:wifi
+          show_header_toggle: false
+          entities:
+            - entity: sensor.broadband_days_remaining
+              name: Days Remaining
+            - entity: input_datetime.commitment_broadband_expiry
+              name: Expiry Date
+            - entity: input_text.commitment_broadband_provider
+              name: Provider
+            - entity: input_text.commitment_broadband_amount
+              name: Amount
+            - entity: input_text.commitment_broadband_notes
+              name: Notes
+            - entity: input_select.commitment_broadband_category
+              name: Category
+            - entity: input_boolean.commitment_broadband_archived
+              name: Archived
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.commitment_energy_archived
+            state: "off"
+        card:
+          type: entities
+          title: Energy
+          icon: mdi:lightning-bolt
+          show_header_toggle: false
+          entities:
+            - entity: sensor.energy_days_remaining
+              name: Days Remaining
+            - entity: input_datetime.commitment_energy_expiry
+              name: Expiry Date
+            - entity: input_text.commitment_energy_provider
+              name: Provider
+            - entity: input_text.commitment_energy_amount
+              name: Amount
+            - entity: input_text.commitment_energy_notes
+              name: Notes
+            - entity: input_select.commitment_energy_category
+              name: Category
+            - entity: input_boolean.commitment_energy_archived
+              name: Archived
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.commitment_phone_archived
+            state: "off"
+        card:
+          type: entities
+          title: Phone Contract
+          icon: mdi:cellphone
+          show_header_toggle: false
+          entities:
+            - entity: sensor.phone_contract_days_remaining
+              name: Days Remaining
+            - entity: input_datetime.commitment_phone_expiry
+              name: Expiry Date
+            - entity: input_text.commitment_phone_provider
+              name: Provider
+            - entity: input_text.commitment_phone_amount
+              name: Amount
+            - entity: input_text.commitment_phone_notes
+              name: Notes
+            - entity: input_select.commitment_phone_category
+              name: Category
+            - entity: input_boolean.commitment_phone_archived
+              name: Archived
+
+      # ── Archived commitments (collapsed) ──
+      - type: markdown
+        title: Archived
+        content: >
+          Toggle the "Archived" switch on any commitment above to hide it
+          from the dashboard and silence its reminders.

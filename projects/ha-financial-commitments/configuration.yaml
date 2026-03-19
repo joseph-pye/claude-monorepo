@@ -1,0 +1,23 @@
+# Home Assistant configuration for Financial Commitments
+#
+# Add these lines to your main configuration.yaml:
+#
+#   homeassistant:
+#     packages:
+#       financial_commitments: !include financial_commitments.yaml
+#
+#   automation: !include automations.yaml
+#   script: !include scripts.yaml
+#
+# Then copy all the YAML files from this project into your HA config directory.
+#
+# Prerequisites:
+#   1. Telegram Bot integration — https://www.home-assistant.io/integrations/telegram_bot/
+#   2. A notify.telegram service (created automatically by the integration)
+
+homeassistant:
+  packages:
+    financial_commitments: !include financial_commitments.yaml
+
+automation: !include automations.yaml
+script: !include scripts.yaml
