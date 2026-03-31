@@ -28,14 +28,14 @@ module large_cutout() {
     // Punch through the wall from the +X side
     translate([0, 0, large_cutout_z])
         rotate([0, 90, 0])
-            cylinder(h = cylinder_outer_radius * 2, r = large_cutout_radius, center = true, $fn = 80);
+            cylinder(h = cylinder_outer_radius * 2, r = large_cutout_radius, center = false, $fn = 80);
 }
 
 module small_cutout() {
     // Punch through the wall from the +Y side (90° around)
     translate([0, 0, small_cutout_z])
-        rotate([90, 0, 0])
-            cylinder(h = cylinder_outer_radius * 2, r = small_cutout_radius, center = true, $fn = 80);
+        rotate([-90, 0, 0])
+            cylinder(h = cylinder_outer_radius * 2, r = small_cutout_radius, center = false, $fn = 80);
 }
 
 // Final model
