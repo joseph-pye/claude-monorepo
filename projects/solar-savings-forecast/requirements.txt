@@ -1,0 +1,4 @@
+# Runtime dependencies — keep this file up to date with `pip freeze > requirements.txt`
+# after installing packages into your .venv.
+
+python-dotenv>=1.0.0
