@@ -70,6 +70,21 @@ Then open `projects/<project-name>/` and implement the user's idea. Update the p
 - Commit messages should be short and imperative, e.g. `add project: weather-summary`.
 - There is no CI pipeline — keep it simple.
 
+## Homelab (Tailscale IPs)
+
+| Variable | Hostname | IP |
+|---|---|---|
+| `HOMELAB_HOMEASSISTANT_IP` | homeassistant | 100.87.154.43 |
+| `HOMELAB_COCKPIT_IP` | cockpit | 100.70.197.112 |
+| `HOMELAB_JELLYFIN_IP` | jellyfin | 100.92.199.114 |
+| `HOMELAB_JENNYS_MACBOOK_AIR_IP` | jennys-macbook-air | 100.119.54.48 |
+| `HOMELAB_JOSEPHS_MAC_MINI_IP` | josephs-mac-mini | 100.126.214.89 |
+| `HOMELAB_NGINXPROXYMANAGER_IP` | nginxproxymanager | 100.87.141.101 |
+| `HOMELAB_PROXMOX_IP` | proxmox | 100.89.214.33 |
+| `HOMELAB_PYECRAFT_IP` | pyecraft | 100.99.173.57 |
+| `HOMELAB_IMMICH_IP` | immich | 100.68.110.65 |
+| `HOMELAB_JOSEPHS_IPHONE_15_PRO_IP` | josephs-iphone-15-pro | 100.104.32.4 |
+
 ## Things to avoid
 
 - Do not commit `.env` files, `venv`/`.venv` directories, `__pycache__`, `node_modules`, or HA `.storage/` directories — `.gitignore` covers these.
