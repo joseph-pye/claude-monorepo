@@ -63,6 +63,8 @@ Then open `projects/<project-name>/` and implement the user's idea. Update the p
 |---|---|
 | `ANTHROPIC_API_KEY` | Anthropic Claude API |
 
+Homelab secrets (HA token, Proxmox API token, etc.) are loaded from `~/.claude/secrets.env` via a SessionStart hook. See `.env.secrets.example` for the expected variables.
+
 ## Git workflow
 
 - The default branch is `main`.
